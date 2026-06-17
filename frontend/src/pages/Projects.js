@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Projects.css';
+import ProjectDetails from '../components/ProjectDetails.js';
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '', owner: 'user1' });
+  const [selectedProject, setSelectedProject] = useState(null);
 
   const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
 
@@ -59,15 +61,30 @@ export default function Projects() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this project?')) return;
     try {
       await fetch(`${API_URL}/api/projects/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
       setProjects(projects.filter(p => p._id !== id));
+      setSelectedProject(null);
     } catch (error) {
       console.error('Error deleting project:', error);
+    }
+  };
+
+  const handleProjectUpdate = async (updatedProject) => {
+    try {
+      const response = await fetch(`${API_URL}/api/projects/${updatedProject._id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updatedProject)
+      });
+      const updated = await response.json();
+      setProjects(projects.map(p => p._id === updatedProject._id ? updated : p));
+      setSelectedProject(null);
+    } catch (error) {
+      console.error('Error updating project:', error);
     }
   };
 
@@ -105,7 +122,12 @@ export default function Projects() {
           <p className="empty">No projects yet. Create one to get started!</p>
         ) : (
           projects.map(project => (
-            <div key={project._id} className="project-card">
+            <div
+              key={project._id}
+              className="project-card"
+              onClick={() => setSelectedProject(project)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="card-header" style={{ borderTopColor: project.color }}>
                 <h3>{project.name}</h3>
                 <span className={`status status-${project.status}`}>{project.status}</span>
@@ -113,8 +135,8 @@ export default function Projects() {
               <p className="description">{project.description}</p>
               <div className="card-footer">
                 <small>Owner: {project.owner}</small>
-                <div className="actions">
-                  <button className="btn-small" onClick={() => alert(`View project: ${project._id}`)}>View</button>
+                <div className="actions" onClick={(e) => e.stopPropagation()}>
+                  <button className="btn-small" onClick={() => setSelectedProject(project)}>View</button>
                   <button className="btn-small btn-danger" onClick={() => handleDelete(project._id)}>Delete</button>
                 </div>
               </div>
@@ -122,6 +144,15 @@ export default function Projects() {
           ))
         )}
       </div>
+
+      {selectedProject && (
+        <ProjectDetails
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+          onUpdate={handleProjectUpdate}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }
