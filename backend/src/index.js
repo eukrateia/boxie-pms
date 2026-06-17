@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import projectRoutes from './routes/projects.js';
 import taskRoutes from './routes/tasks.js';
+import authRoutes from './routes/auth.js';
+import { authMiddleware } from './middleware/auth.js';
 
 dotenv.config();
 
@@ -20,14 +22,17 @@ mongoose.connect(MONGODB_URI)
   .then(() => console.log('✓ Connected to MongoDB'))
   .catch(err => console.error('✗ MongoDB connection error:', err));
 
-// Health check
+// Health check (no auth required)
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', app: 'pms' });
 });
 
-// API routes
-app.use('/api/projects', projectRoutes);
-app.use('/api/tasks', taskRoutes);
+// Auth routes (no auth required)
+app.use('/api/auth', authRoutes);
+
+// Protected routes (auth required)
+app.use('/api/projects', authMiddleware, projectRoutes);
+app.use('/api/tasks', authMiddleware, taskRoutes);
 
 // Root API route
 app.get('/api', (req, res) => {

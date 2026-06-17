@@ -9,13 +9,20 @@ export default function Projects() {
 
   const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
 
+  const getAuthHeaders = () => ({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  });
+
   useEffect(() => {
     fetchProjects();
   }, []);
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/projects`);
+      const response = await fetch(`${API_URL}/api/projects`, {
+        headers: getAuthHeaders()
+      });
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
@@ -39,7 +46,7 @@ export default function Projects() {
     try {
       const response = await fetch(`${API_URL}/api/projects`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(formData)
       });
       const newProject = await response.json();
@@ -54,7 +61,10 @@ export default function Projects() {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this project?')) return;
     try {
-      await fetch(`${API_URL}/api/projects/${id}`, { method: 'DELETE' });
+      await fetch(`${API_URL}/api/projects/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
       setProjects(projects.filter(p => p._id !== id));
     } catch (error) {
       console.error('Error deleting project:', error);

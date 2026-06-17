@@ -17,6 +17,11 @@ export default function Tasks() {
 
   const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
 
+  const getAuthHeaders = () => ({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  });
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -24,8 +29,8 @@ export default function Tasks() {
   const fetchData = async () => {
     try {
       const [tasksRes, projectsRes] = await Promise.all([
-        fetch(`${API_URL}/api/tasks`),
-        fetch(`${API_URL}/api/projects`)
+        fetch(`${API_URL}/api/tasks`, { headers: getAuthHeaders() }),
+        fetch(`${API_URL}/api/projects`, { headers: getAuthHeaders() })
       ]);
 
       if (!tasksRes.ok || !projectsRes.ok) {
@@ -56,7 +61,7 @@ export default function Tasks() {
     try {
       const response = await fetch(`${API_URL}/api/tasks`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(formData)
       });
       const newTask = await response.json();
@@ -79,7 +84,7 @@ export default function Tasks() {
     try {
       const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ status: newStatus })
       });
       const updated = await response.json();
@@ -92,7 +97,10 @@ export default function Tasks() {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this task?')) return;
     try {
-      await fetch(`${API_URL}/api/tasks/${id}`, { method: 'DELETE' });
+      await fetch(`${API_URL}/api/tasks/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
       setTasks(tasks.filter(t => t._id !== id));
     } catch (error) {
       console.error('Error deleting task:', error);
