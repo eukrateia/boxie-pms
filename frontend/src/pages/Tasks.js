@@ -27,12 +27,20 @@ export default function Tasks() {
         fetch(`${API_URL}/api/tasks`),
         fetch(`${API_URL}/api/projects`)
       ]);
+
+      if (!tasksRes.ok || !projectsRes.ok) {
+        throw new Error(`API error: tasks=${tasksRes.status}, projects=${projectsRes.status}`);
+      }
+
       const tasksData = await tasksRes.json();
       const projectsData = await projectsRes.json();
-      setTasks(tasksData);
-      setProjects(projectsData);
+
+      setTasks(Array.isArray(tasksData) ? tasksData : []);
+      setProjects(Array.isArray(projectsData) ? projectsData : []);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setTasks([]);
+      setProjects([]);
     } finally {
       setLoading(false);
     }
