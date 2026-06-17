@@ -1,17 +1,21 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Auth.css';
+import { NotificationContext } from '../App.js';
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const notif = useContext(NotificationContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    if (!email || !password) {
+      notif?.showError('Email and password are required');
+      return;
+    }
     setLoading(true);
 
     try {
@@ -32,7 +36,7 @@ export default function Login({ onLogin }) {
       onLogin(data.user);
       navigate('/');
     } catch (err) {
-      setError(err.message);
+      notif?.showError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -42,7 +46,6 @@ export default function Login({ onLogin }) {
     <div className="auth-container">
       <div className="auth-box">
         <h1>Login</h1>
-        {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
           <input
             type="email"

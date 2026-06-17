@@ -6,8 +6,12 @@ import Tasks from './pages/Tasks.js';
 import Login from './pages/Login.js';
 import Signup from './pages/Signup.js';
 import Notifications from './components/Notifications.js';
+import { ErrorBoundary } from './components/ErrorBoundary.js';
+import { NotificationDisplay } from './components/NotificationDisplay.js';
+import { useNotification } from './hooks/useNotification.js';
 
 export const AuthContext = React.createContext(null);
+export const NotificationContext = React.createContext(null);
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState('projects');
@@ -69,6 +73,7 @@ function AppContent() {
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { notification, clear } = useNotification();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -85,24 +90,29 @@ function App() {
   }
 
   return (
-    <BrowserRouter basename="/pms">
-      <AuthContext.Provider value={[user, setUser]}>
-        <Routes>
-          {user ? (
-            <>
-              <Route path="/" element={<AppContent />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </>
-          ) : (
-            <>
-              <Route path="/login" element={<Login onLogin={setUser} />} />
-              <Route path="/signup" element={<Signup onLogin={setUser} />} />
-              <Route path="*" element={<Navigate to="/login" />} />
-            </>
-          )}
-        </Routes>
-      </AuthContext.Provider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter basename="/pms">
+        <AuthContext.Provider value={[user, setUser]}>
+          <NotificationContext.Provider value={{ notification, clear }}>
+            <Routes>
+              {user ? (
+                <>
+                  <Route path="/" element={<AppContent />} />
+                  <Route path="*" element={<Navigate to="/" />} />
+                </>
+              ) : (
+                <>
+                  <Route path="/login" element={<Login onLogin={setUser} />} />
+                  <Route path="/signup" element={<Signup onLogin={setUser} />} />
+                  <Route path="*" element={<Navigate to="/login" />} />
+                </>
+              )}
+            </Routes>
+            <NotificationDisplay notification={notification} onClose={clear} />
+          </NotificationContext.Provider>
+        </AuthContext.Provider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

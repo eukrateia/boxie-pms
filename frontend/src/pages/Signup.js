@@ -1,27 +1,32 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Auth.css';
+import { NotificationContext } from '../App.js';
 
 export default function Signup({ onLogin }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const notif = useContext(NotificationContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+
+    if (!name || !email || !password || !confirmPassword) {
+      notif?.showError('All fields are required');
+      return;
+    }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      notif?.showError('Passwords do not match');
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      notif?.showError('Password must be at least 6 characters');
       return;
     }
 
@@ -45,7 +50,7 @@ export default function Signup({ onLogin }) {
       onLogin(data.user);
       navigate('/');
     } catch (err) {
-      setError(err.message);
+      notif?.showError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -55,7 +60,6 @@ export default function Signup({ onLogin }) {
     <div className="auth-container">
       <div className="auth-box">
         <h1>Sign Up</h1>
-        {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
           <input
             type="text"
