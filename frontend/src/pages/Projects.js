@@ -62,7 +62,7 @@ export default function Projects() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`${API_URL}/api/projects/${id}`, {
+      await fetch(`${API_URL}/projects/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });

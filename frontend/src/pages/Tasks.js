@@ -86,7 +86,7 @@ export default function Tasks() {
 
   const handleStatusChange = async (taskId, newStatus) => {
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
+      const response = await fetch(`${API_URL}/tasks/${taskId}`, {
         method: 'PUT',
         headers: getAuthHeaders(),
         body: JSON.stringify({ status: newStatus })
@@ -101,7 +101,7 @@ export default function Tasks() {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this task?')) return;
     try {
-      await fetch(`${API_URL}/api/tasks/${id}`, {
+      await fetch(`${API_URL}/tasks/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
