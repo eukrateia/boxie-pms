@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import '../styles/Tasks.css';
+import TaskDetails from '../components/TaskDetails.js';
+import { AuthContext } from '../App.js';
 
 export default function Tasks() {
+  const [user] = useContext(AuthContext);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,6 +111,21 @@ export default function Tasks() {
     }
   };
 
+  const handleTaskUpdate = async (updatedTask) => {
+    try {
+      const response = await fetch(`${API_URL}/api/tasks/${updatedTask._id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updatedTask)
+      });
+      const updated = await response.json();
+      setTasks(tasks.map(t => t._id === updatedTask._id ? updated : t));
+      setSelectedTask(null);
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
+  };
+
   const getProjectName = (projectId) => {
     return projects.find(p => p._id === projectId)?.name || 'Unknown Project';
   };
@@ -177,6 +196,7 @@ export default function Tasks() {
                 projectName={getProjectName(task.projectId)}
                 onStatusChange={handleStatusChange}
                 onDelete={handleDelete}
+                onClick={() => setSelectedTask(task)}
               />
             ))}
           </div>
@@ -194,6 +214,7 @@ export default function Tasks() {
                 projectName={getProjectName(task.projectId)}
                 onStatusChange={handleStatusChange}
                 onDelete={handleDelete}
+                onClick={() => setSelectedTask(task)}
               />
             ))}
           </div>
@@ -211,6 +232,7 @@ export default function Tasks() {
                 projectName={getProjectName(task.projectId)}
                 onStatusChange={handleStatusChange}
                 onDelete={handleDelete}
+                onClick={() => setSelectedTask(task)}
               />
             ))}
           </div>
@@ -228,16 +250,27 @@ export default function Tasks() {
                 projectName={getProjectName(task.projectId)}
                 onStatusChange={handleStatusChange}
                 onDelete={handleDelete}
+                onClick={() => setSelectedTask(task)}
               />
             ))}
           </div>
         </div>
       </div>
+
+      {selectedTask && (
+        <TaskDetails
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
+          onStatusChange={handleStatusChange}
+          currentUserId={user?._id}
+          onTaskUpdate={handleTaskUpdate}
+        />
+      )}
     </div>
   );
 }
 
-function TaskCard({ task, projectName, onStatusChange, onDelete }) {
+function TaskCard({ task, projectName, onStatusChange, onDelete, onClick }) {
   const priorityColors = {
     low: '#10b981',
     medium: '#3b82f6',
@@ -246,7 +279,7 @@ function TaskCard({ task, projectName, onStatusChange, onDelete }) {
   };
 
   return (
-    <div className="task-card">
+    <div className="task-card" onClick={onClick} style={{ cursor: 'pointer' }}>
       <div className="task-header">
         <h4>{task.title}</h4>
         <span className="priority" style={{ backgroundColor: priorityColors[task.priority] }}>
@@ -257,7 +290,7 @@ function TaskCard({ task, projectName, onStatusChange, onDelete }) {
       <div className="task-meta">
         <small>{projectName}</small>
       </div>
-      <div className="task-actions">
+      <div className="task-actions" onClick={(e) => e.stopPropagation()}>
         <select
           value={task.status}
           onChange={(e) => onStatusChange(task._id, e.target.value)}
