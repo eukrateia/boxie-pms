@@ -5,6 +5,7 @@ import Projects from './pages/Projects.js';
 import Tasks from './pages/Tasks.js';
 import Login from './pages/Login.js';
 import Signup from './pages/Signup.js';
+import Notifications from './components/Notifications.js';
 
 export const AuthContext = React.createContext(null);
 
@@ -39,6 +40,9 @@ function AppContent() {
               >
                 Tasks
               </button>
+            </li>
+            <li>
+              <Notifications />
             </li>
             <li className="user-info">
               {user && (

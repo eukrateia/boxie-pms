@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import projectRoutes from './routes/projects.js';
 import taskRoutes from './routes/tasks.js';
 import authRoutes from './routes/auth.js';
+import notificationRoutes from './routes/notifications.js';
 import { authMiddleware } from './middleware/auth.js';
 
 dotenv.config();
@@ -33,6 +34,7 @@ app.use('/api/auth', authRoutes);
 // Protected routes (auth required)
 app.use('/api/projects', authMiddleware, projectRoutes);
 app.use('/api/tasks', authMiddleware, taskRoutes);
+app.use('/api/notifications', authMiddleware, notificationRoutes);
 
 // Root API route
 app.get('/api', (req, res) => {

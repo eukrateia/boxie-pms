@@ -1,5 +1,6 @@
 import express from 'express';
 import Task from '../models/Task.js';
+import { createNotification } from './notifications.js';
 
 const router = express.Router();
 
@@ -51,12 +52,38 @@ router.post('/', async (req, res) => {
 // Update task
 router.put('/:id', async (req, res) => {
   try {
+    const oldTask = await Task.findById(req.params.id);
     const task = await Task.findByIdAndUpdate(
       req.params.id,
       { ...req.body, updatedAt: new Date() },
       { new: true }
     );
     if (!task) return res.status(404).json({ error: 'Task not found' });
+
+    // Create notifications for status changes
+    if (req.body.status && oldTask.status !== req.body.status) {
+      await createNotification(req.userId, {
+        type: 'task-status-changed',
+        title: `Task "${task.title}" status changed`,
+        message: `Status changed from ${oldTask.status} to ${req.body.status}`,
+        relatedTaskId: task._id,
+        relatedProjectId: task.projectId,
+        createdBy: req.userEmail
+      });
+    }
+
+    // Create notifications when task is assigned
+    if (req.body.assignedTo && oldTask.assignedTo !== req.body.assignedTo) {
+      await createNotification(req.body.assignedTo, {
+        type: 'task-assigned',
+        title: 'New task assigned to you',
+        message: `"${task.title}" has been assigned to you`,
+        relatedTaskId: task._id,
+        relatedProjectId: task.projectId,
+        createdBy: req.userEmail
+      });
+    }
+
     res.json(task);
   } catch (error) {
     res.status(500).json({ error: error.message });
