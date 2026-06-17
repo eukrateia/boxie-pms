@@ -8,7 +8,7 @@ export default function Comments({ taskId, taskTitle, assignedTo, currentUserId 
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/pms/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export default function Comments({ taskId, taskTitle, assignedTo, currentUserId 
 
     try {
       const response = await fetch(
-        `${API_URL}/api/tasks/${taskId}/comments/${commentId}`,
+        `${API_URL}/tasks/${taskId}/comments/${commentId}`,
         {
           method: 'PUT',
           headers: getAuthHeaders(),
@@ -86,7 +86,7 @@ export default function Comments({ taskId, taskTitle, assignedTo, currentUserId 
 
     try {
       const response = await fetch(
-        `${API_URL}/api/tasks/${taskId}/comments/${commentId}`,
+        `${API_URL}/tasks/${taskId}/comments/${commentId}`,
         {
           method: 'DELETE',
           headers: getAuthHeaders()

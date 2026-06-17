@@ -19,7 +19,7 @@ export default function Tasks() {
     createdBy: 'user1'
   });
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/pms/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export default function Tasks() {
     try {
       const [tasksRes, projectsRes] = await Promise.all([
         fetch(`${API_URL}/tasks`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/projects`, { headers: getAuthHeaders() })
+        fetch(`${API_URL}/projects`, { headers: getAuthHeaders() })
       ]);
 
       if (!tasksRes.ok || !projectsRes.ok) {

@@ -9,7 +9,7 @@ export default function Projects() {
   const [formData, setFormData] = useState({ name: '', description: '', owner: 'user1' });
   const [selectedProject, setSelectedProject] = useState(null);
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/pms/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',

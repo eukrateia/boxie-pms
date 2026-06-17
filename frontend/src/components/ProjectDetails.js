@@ -7,7 +7,7 @@ export default function ProjectDetails({ project, onClose, onUpdate, onDelete })
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/pms/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',

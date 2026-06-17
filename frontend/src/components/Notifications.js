@@ -7,7 +7,7 @@ export default function Notifications() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/pms/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export default function Notifications() {
 
   const markAsRead = async (id) => {
     try {
-      await fetch(`${API_URL}/api/notifications/${id}/read`, {
+      await fetch(`${API_URL}/notifications/${id}/read`, {
         method: 'PUT',
         headers: getAuthHeaders()
       });
