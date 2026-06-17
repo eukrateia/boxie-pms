@@ -85,7 +85,7 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/pms">
       <AuthContext.Provider value={[user, setUser]}>
         <Routes>
           {user ? (
