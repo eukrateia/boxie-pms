@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import '../styles/Notifications.css';
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const API_URL = process.env.REACT_APP_API_BASE_URL || '/pms/api';
 
@@ -14,14 +13,7 @@ export default function Notifications() {
     'Authorization': `Bearer ${localStorage.getItem('token')}`
   });
 
-  useEffect(() => {
-    fetchNotifications();
-    // Poll for new notifications every 10 seconds
-    const interval = setInterval(fetchNotifications, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/notifications`, {
         headers: getAuthHeaders()
@@ -34,7 +26,13 @@ export default function Notifications() {
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
-  };
+  }, [API_URL]);
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 10000);
+    return () => clearInterval(interval);
+  }, [fetchNotifications]);
 
   const markAsRead = async (id) => {
     try {

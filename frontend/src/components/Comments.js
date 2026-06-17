@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import '../styles/Comments.css';
 
 export default function Comments({ taskId, taskTitle, assignedTo, currentUserId }) {
@@ -15,11 +15,7 @@ export default function Comments({ taskId, taskTitle, assignedTo, currentUserId 
     'Authorization': `Bearer ${localStorage.getItem('token')}`
   });
 
-  useEffect(() => {
-    fetchComments();
-  }, [taskId]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/tasks/${taskId}/comments`, {
         headers: getAuthHeaders()
@@ -34,7 +30,11 @@ export default function Comments({ taskId, taskTitle, assignedTo, currentUserId 
     } finally {
       setLoading(false);
     }
-  };
+  }, [taskId, API_URL]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [fetchComments]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

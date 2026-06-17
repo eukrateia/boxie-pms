@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import '../styles/ProjectDetails.css';
 
 export default function ProjectDetails({ project, onClose, onUpdate, onDelete }) {
@@ -16,11 +16,7 @@ export default function ProjectDetails({ project, onClose, onUpdate, onDelete })
 
   const statusOptions = ['planning', 'active', 'on-hold', 'completed', 'archived'];
 
-  useEffect(() => {
-    fetchProjectTasks();
-  }, [project._id]);
-
-  const fetchProjectTasks = async () => {
+  const fetchProjectTasks = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/tasks?projectId=${project._id}`, {
         headers: getAuthHeaders()
@@ -35,7 +31,11 @@ export default function ProjectDetails({ project, onClose, onUpdate, onDelete })
     } finally {
       setLoading(false);
     }
-  };
+  }, [project._id, API_URL]);
+
+  useEffect(() => {
+    fetchProjectTasks();
+  }, [fetchProjectTasks]);
 
   const handleSave = () => {
     onUpdate(editedProject);

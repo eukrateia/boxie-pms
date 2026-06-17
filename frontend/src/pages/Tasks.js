@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import '../styles/Tasks.css';
 import TaskDetails from '../components/TaskDetails.js';
 import { AuthContext } from '../App.js';
@@ -26,11 +26,7 @@ export default function Tasks() {
     'Authorization': `Bearer ${localStorage.getItem('token')}`
   });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [tasksRes, projectsRes] = await Promise.all([
         fetch(`${API_URL}/tasks`, { headers: getAuthHeaders() }),
@@ -53,7 +49,11 @@ export default function Tasks() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

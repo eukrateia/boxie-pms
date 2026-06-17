@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/Projects.css';
 import ProjectDetails from '../components/ProjectDetails.js';
 
@@ -16,11 +16,7 @@ export default function Projects() {
     'Authorization': `Bearer ${localStorage.getItem('token')}`
   });
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/projects`, {
         headers: getAuthHeaders()
@@ -41,7 +37,11 @@ export default function Projects() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL]);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
