@@ -91,7 +91,7 @@ cd ..
 
 ### Step 6: Start with PM2
 
-**Create PM2 ecosystem file** (`ecosystem.config.js`):
+**Create PM2 ecosystem file** (`ecosystem.config.cjs`):
 ```javascript
 module.exports = {
   apps: [

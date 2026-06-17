@@ -69,7 +69,7 @@ echo ""
 
 # Start with PM2
 echo -e "${YELLOW}Starting applications with PM2...${NC}"
-pm2 start ecosystem.config.js
+pm2 start ecosystem.config.cjs
 sleep 3
 echo -e "${GREEN}✓ Applications started${NC}"
 echo ""
