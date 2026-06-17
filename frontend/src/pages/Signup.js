@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Auth.css';
 import { NotificationContext } from '../App.js';
 
@@ -60,13 +60,14 @@ export default function Signup({ onLogin }) {
     <div className="auth-container">
       <div className="auth-box">
         <h1>Sign Up</h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <input
             type="text"
             placeholder="Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={loading}
+            autoComplete="off"
             required
           />
           <input
@@ -75,6 +76,7 @@ export default function Signup({ onLogin }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
+            autoComplete="off"
             required
           />
           <input
@@ -83,6 +85,7 @@ export default function Signup({ onLogin }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
+            autoComplete="new-password"
             required
           />
           <input
@@ -91,6 +94,7 @@ export default function Signup({ onLogin }) {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             disabled={loading}
+            autoComplete="new-password"
             required
           />
           <button type="submit" disabled={loading}>
@@ -98,7 +102,7 @@ export default function Signup({ onLogin }) {
           </button>
         </form>
         <p className="auth-link">
-          Already have an account? <a href="/login">Login</a>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
       </div>
     </div>
