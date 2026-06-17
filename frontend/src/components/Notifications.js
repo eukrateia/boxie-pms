@@ -7,7 +7,7 @@ export default function Notifications() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export default function Notifications() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/notifications`, {
+      const response = await fetch(`${API_URL}/notifications`, {
         headers: getAuthHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch notifications');

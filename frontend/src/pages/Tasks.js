@@ -19,7 +19,7 @@ export default function Tasks() {
     createdBy: 'user1'
   });
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export default function Tasks() {
   const fetchData = async () => {
     try {
       const [tasksRes, projectsRes] = await Promise.all([
-        fetch(`${API_URL}/api/tasks`, { headers: getAuthHeaders() }),
+        fetch(`${API_URL}/tasks`, { headers: getAuthHeaders() }),
         fetch(`${API_URL}/api/projects`, { headers: getAuthHeaders() })
       ]);
 
@@ -63,7 +63,7 @@ export default function Tasks() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/tasks`, {
+      const response = await fetch(`${API_URL}/tasks`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(formData)

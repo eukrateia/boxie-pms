@@ -9,7 +9,7 @@ export default function Projects() {
   const [formData, setFormData] = useState({ name: '', description: '', owner: 'user1' });
   const [selectedProject, setSelectedProject] = useState(null);
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ export default function Projects() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/projects`, {
+      const response = await fetch(`${API_URL}/projects`, {
         headers: getAuthHeaders()
       });
       if (!response.ok) {
@@ -46,7 +46,7 @@ export default function Projects() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_URL}/api/projects`, {
+      const response = await fetch(`${API_URL}/projects`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(formData)

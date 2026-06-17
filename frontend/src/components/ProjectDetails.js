@@ -7,7 +7,7 @@ export default function ProjectDetails({ project, onClose, onUpdate, onDelete })
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ export default function ProjectDetails({ project, onClose, onUpdate, onDelete })
 
   const fetchProjectTasks = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/tasks?projectId=${project._id}`, {
+      const response = await fetch(`${API_URL}/tasks?projectId=${project._id}`, {
         headers: getAuthHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch tasks');

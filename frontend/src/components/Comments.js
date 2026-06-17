@@ -8,7 +8,7 @@ export default function Comments({ taskId, taskTitle, assignedTo, currentUserId 
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
+  const API_URL = process.env.REACT_APP_API_BASE_URL || '/api';
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ export default function Comments({ taskId, taskTitle, assignedTo, currentUserId 
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${taskId}/comments`, {
+      const response = await fetch(`${API_URL}/tasks/${taskId}/comments`, {
         headers: getAuthHeaders()
       });
 
@@ -41,7 +41,7 @@ export default function Comments({ taskId, taskTitle, assignedTo, currentUserId 
     if (!newComment.trim()) return;
 
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${taskId}/comments`, {
+      const response = await fetch(`${API_URL}/tasks/${taskId}/comments`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({ text: newComment })
