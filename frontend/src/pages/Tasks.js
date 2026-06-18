@@ -147,9 +147,11 @@ export default function Tasks() {
     <div className="tasks-page">
       <div className="header">
         <h1>Tasks</h1>
-        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'Cancel' : '+ New Task'}
-        </button>
+        {!showForm && (
+          <button className="btn-primary" onClick={() => setShowForm(true)}>
+            + New Task
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -191,7 +193,10 @@ export default function Tasks() {
             onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
             placeholder="Due date"
           />
-          <button type="submit" className="btn-primary">Create</button>
+          <div className="btn-group">
+            <button type="submit" className="btn-primary">Create</button>
+            <button type="button" className="btn-cancel" onClick={() => setShowForm(false)}>Cancel</button>
+          </div>
         </form>
       )}
 

@@ -95,9 +95,11 @@ export default function Projects() {
     <div className="projects-page">
       <div className="header">
         <h1>Projects</h1>
-        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'Cancel' : '+ New Project'}
-        </button>
+        {!showForm && (
+          <button className="btn-primary" onClick={() => setShowForm(true)}>
+            + New Project
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -114,7 +116,10 @@ export default function Projects() {
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
-          <button type="submit" className="btn-primary">Create</button>
+          <div className="btn-group">
+            <button type="submit" className="btn-primary">Create</button>
+            <button type="button" className="btn-cancel" onClick={() => setShowForm(false)}>Cancel</button>
+          </div>
         </form>
       )}
 
