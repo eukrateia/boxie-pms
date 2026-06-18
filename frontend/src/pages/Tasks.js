@@ -16,6 +16,7 @@ export default function Tasks() {
     projectId: '',
     priority: 'medium',
     status: 'todo',
+    dueDate: '',
     createdBy: 'user1'
   });
 
@@ -63,10 +64,14 @@ export default function Tasks() {
     }
 
     try {
+      const taskData = {
+        ...formData,
+        dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : null
+      };
       const response = await fetch(`${API_URL}/tasks`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify(formData)
+        body: JSON.stringify(taskData)
       });
       const newTask = await response.json();
       setTasks([newTask, ...tasks]);
@@ -76,6 +81,7 @@ export default function Tasks() {
         projectId: '',
         priority: 'medium',
         status: 'todo',
+        dueDate: '',
         createdBy: 'user1'
       });
       setShowForm(false);
@@ -113,7 +119,7 @@ export default function Tasks() {
 
   const handleTaskUpdate = async (updatedTask) => {
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${updatedTask._id}`, {
+      const response = await fetch(`${API_URL}/tasks/${updatedTask._id}`, {
         method: 'PUT',
         headers: getAuthHeaders(),
         body: JSON.stringify(updatedTask)
@@ -179,6 +185,12 @@ export default function Tasks() {
             <option value="high">High Priority</option>
             <option value="urgent">Urgent</option>
           </select>
+          <input
+            type="date"
+            value={formData.dueDate}
+            onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+            placeholder="Due date"
+          />
           <button type="submit" className="btn-primary">Create</button>
         </form>
       )}
@@ -278,6 +290,18 @@ function TaskCard({ task, projectName, onStatusChange, onDelete, onClick }) {
     urgent: '#ef4444'
   };
 
+  const formatDate = (date) => {
+    if (!date) return null;
+    return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const isOverdue = (date) => {
+    if (!date) return false;
+    return new Date(date) < new Date() && task.status !== 'done';
+  };
+
+  const dueDateColor = isOverdue(task.dueDate) ? '#ef4444' : '#666';
+
   return (
     <div className="task-card" onClick={onClick} style={{ cursor: 'pointer' }}>
       <div className="task-header">
@@ -289,6 +313,11 @@ function TaskCard({ task, projectName, onStatusChange, onDelete, onClick }) {
       <p className="task-description">{task.description}</p>
       <div className="task-meta">
         <small>{projectName}</small>
+        {task.dueDate && (
+          <small style={{ color: dueDateColor, fontWeight: isOverdue(task.dueDate) ? 'bold' : 'normal' }}>
+            📅 {formatDate(task.dueDate)} {isOverdue(task.dueDate) ? '(Overdue)' : ''}
+          </small>
+        )}
       </div>
       <div className="task-actions" onClick={(e) => e.stopPropagation()}>
         <select

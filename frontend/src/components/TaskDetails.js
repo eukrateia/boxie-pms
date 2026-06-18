@@ -21,7 +21,11 @@ export default function TaskDetails({ task, onClose, onStatusChange, currentUser
   };
 
   const handleSave = () => {
-    onTaskUpdate(editedTask);
+    const taskToSave = {
+      ...editedTask,
+      dueDate: editedTask.dueDate ? new Date(editedTask.dueDate).toISOString() : null
+    };
+    onTaskUpdate(taskToSave);
     setIsEditing(false);
   };
 
