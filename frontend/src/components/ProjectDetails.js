@@ -1,11 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
 import '../styles/ProjectDetails.css';
 
+const PRESET_COLORS = [
+  '#ef4444', '#f97316', '#f59e0b', '#eab308',
+  '#84cc16', '#22c55e', '#10b981', '#14b8a6',
+  '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1',
+  '#a855f7', '#d946ef', '#ec4899'
+];
+
 export default function ProjectDetails({ project, onClose, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedProject, setEditedProject] = useState(project);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showColorModal, setShowColorModal] = useState(false);
 
   const API_URL = process.env.REACT_APP_API_BASE_URL || '/pms/api';
 
@@ -66,16 +74,7 @@ export default function ProjectDetails({ project, onClose, onUpdate, onDelete })
       <div className="project-details-modal" onClick={(e) => e.stopPropagation()}>
         <div className="project-details-header">
           <div className="project-header-info">
-            {isEditing ? (
-              <input
-                type="text"
-                value={editedProject.name}
-                onChange={(e) => setEditedProject({ ...editedProject, name: e.target.value })}
-                className="edit-name-input"
-              />
-            ) : (
-              <h2>{project.name}</h2>
-            )}
+            <h2>{project.name}</h2>
             <div className="project-status-badge" style={{ borderTopColor: project.color }}>
               {project.status}
             </div>
@@ -106,11 +105,36 @@ export default function ProjectDetails({ project, onClose, onUpdate, onDelete })
               <div className="info-item">
                 <label>Color</label>
                 {isEditing ? (
-                  <input
-                    type="color"
-                    value={editedProject.color}
-                    onChange={(e) => setEditedProject({ ...editedProject, color: e.target.value })}
-                  />
+                  <div className="color-picker-wrapper">
+                    <div
+                      className="color-swatch"
+                      style={{ backgroundColor: editedProject.color }}
+                      onClick={() => setShowColorModal(true)}
+                    />
+                    {showColorModal && (
+                      <div className="color-modal-overlay" onClick={() => setShowColorModal(false)}>
+                        <div className="color-modal" onClick={(e) => e.stopPropagation()}>
+                          <h4>Choose a Color</h4>
+                          <div className="color-grid">
+                            {PRESET_COLORS.map(color => (
+                              <div
+                                key={color}
+                                className={`color-option ${editedProject.color === color ? 'selected' : ''}`}
+                                style={{ backgroundColor: color }}
+                                onClick={() => {
+                                  setEditedProject({ ...editedProject, color });
+                                  setShowColorModal(false);
+                                }}
+                                title={color}
+                              >
+                                {editedProject.color === color && '✓'}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   <div
                     className="color-swatch"

@@ -76,7 +76,7 @@ export default function Projects() {
 
   const handleProjectUpdate = async (updatedProject) => {
     try {
-      const response = await fetch(`${API_URL}/api/projects/${updatedProject._id}`, {
+      const response = await fetch(`${API_URL}/projects/${updatedProject._id}`, {
         method: 'PUT',
         headers: getAuthHeaders(),
         body: JSON.stringify(updatedProject)

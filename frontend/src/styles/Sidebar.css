@@ -15,7 +15,7 @@
 
 .sidebar-toggle:hover {
   background: #f3f4f6;
-  border-color: #6366f1;
+  border-color: #f97316;
 }
 
 .sidebar {
@@ -49,7 +49,7 @@
 .sidebar-logo {
   font-size: 1.25rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -96,15 +96,15 @@
 
 .nav-item:hover {
   background: #f3f4f6;
-  color: #6366f1;
+  color: #f97316;
   transform: translateX(4px);
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%);
-  color: #6366f1;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(234, 88, 12, 0.1) 100%);
+  color: #f97316;
   font-weight: 600;
-  border-left: 4px solid #6366f1;
+  border-left: 4px solid #f97316;
   padding-left: calc(1.5rem - 4px);
 }
 
@@ -139,7 +139,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   color: white;
   display: flex;
   align-items: center;
